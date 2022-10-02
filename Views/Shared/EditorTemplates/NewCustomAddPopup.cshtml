@@ -1,0 +1,86 @@
+﻿@model Testkendo.Models.Model.NewViewModel
+
+<div class="k-edit-form-container">
+    <h3>Customized Person edit template</h3>
+    <br />
+    @*@Html.HiddenFor(model => model.PId)
+        @Html.HiddenFor(model => model.CId)*@
+    @Model.CId=$("#CategoryDropDownList").data("kendoDropDownList").value();
+    <div class="k-edit-label">
+        @Html.LabelFor(model => model.PName)
+    </div>
+    <div class="k-edit-field">
+        @Html.EditorFor(model => model.PName)
+        @Html.ValidationMessageFor(model => model.PName)
+    </div>
+
+
+    
+
+    <div class="k-edit-label">
+        @Html.LabelFor(model => model.CName)
+    </div>
+    <div class="k-edit-field">
+
+        @(Html.Kendo().DropDownListFor(model=>model.CId)
+            .Name("CategoryDropDownList")
+
+        .DataTextField("CName")
+        .DataValueField("CId")
+        @*.Events(x => x.Select("onSelectCategoryValue"))*@
+        .DataSource(source =>
+        {
+            source.Read(read =>
+            {
+                read.Action("GetCategory", "Home");
+                
+
+            })
+            .ServerFiltering(true);
+        })
+        )
+        @*.DataSource(dataSource => dataSource
+
+                .Model(model => model.Id(p => p.PId))
+
+                .Read(read => read.Action("EditingPopup_Read", "Home"))
+
+
+            )*@
+
+
+
+
+
+        )
+    </div>
+
+    <div class="k-edit-label">
+        @Html.LabelFor(model => model.PPrice)
+    </div>
+    <div class="k-edit-field">
+        @Html.EditorFor(model => model.PPrice)
+        @Html.ValidationMessageFor(model => model.PPrice)
+    </div>
+    <div class="k-edit-label">
+        @Html.LabelFor(model => model.PDesc)
+    </div>
+    <div class="k-edit-field">
+        @Html.EditorFor(model => model.PDesc)
+        @Html.ValidationMessageFor(model => model.PDesc)
+    </div>
+</div>
+<script>
+
+    @*function onSelectCategoryValue(e) {
+        alert(
+        $('#CategoryDropDownList').data("KendoDropDownList").dataItem.Value)
+
+        var dataItem = this.dataItem(e.item.index());
+        var bookId = dataItem.BookId;
+        //other user code
+
+
+    }*@
+    @*$("#CategoryDropDownList").data("kendoDropDownList").value(mode.CId);*@
+        </script>

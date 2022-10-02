@@ -1,0 +1,125 @@
+﻿@model Testkendo.Models.Model.NewViewModel
+@*@model Testkendo.Models.Model.ViewModel*@
+
+@{
+    ViewBag.Title = "Secondpage";
+}
+
+@(Html.Kendo().TabStrip()
+        .Name("tabstrip")
+        .TabPosition(TabStripTabPosition.Left)
+        .Collapsible(true)
+        .Navigatable(false)
+        .Animation(animation =>
+        {
+            animation.Open(config =>
+            {
+                config.Fade(FadeDirection.In);
+            });
+        })
+        .Items(items =>
+        {
+            items.Add().Text("Home")
+
+            @*.Content(Html.Kendo().Grid(Model.getItem)*@
+            .Content(Html.Kendo().Grid<Testkendo.Models.Model.NewViewModel>()
+            .Name("grid")
+            .Columns(columns =>
+            {
+                @*columns.Bound(p => p.PId).Title("Product Name");*@
+                @*columns.Bound(p => p.PId).Title("PId");*@
+                columns.Bound(p => p.PName).Title("Product Name");
+                columns.Bound(p => p.CName).Title("Category").Width(130);
+                columns.Bound(p => p.PPrice).Title("Price").Width(130);
+                columns.Bound(p => p.PDesc).Title("Description").Width(130);
+                columns.Command(command => { command.Edit(); command.Destroy(); }).Width(250);
+            })
+            .ToolBar(toolbar => toolbar.Create())
+            @*.ToolBar(toolbar => toolbar.Custom().Text("Add New Sample").HtmlAttributes(new { id = "customCommand" }))*@
+            @*.ToolBar(toolbar => { toolbar.Template("CustomAddPopup"); })*@
+
+
+            @*.ToolBar(toolBar =>
+                {
+          //toolBar.Create().Text("default add").HtmlAttributes(new { onclick = "Ps.onCreate()" });
+          toolBar.Template("<a class='k-button k-button-icontext' onclick='Ps.onCreate()' href='#'></span>Create</a>");
+             })*@
+
+            .Editable(editable => editable.Mode(GridEditMode.PopUp))
+            @*.Editable(editable =>editable.Mode(GridEditMode.PopUp).TemplateName("NewCustomAddPopup"))*@
+            .Pageable()
+            .Sortable()
+            .Scrollable()
+            .HtmlAttributes(new { style = "height:550px;" })
+            .DataSource(dataSource => dataSource
+                .Ajax()
+                .PageSize(20)
+                .Events(events => events.Error("error_handler"))
+                .Model(model => model.Id(p => p.PId))
+                .Create(update => update.Action("EditingPopup_Create", "Home"))
+                .Read(read => read.Action("EditingPopup_Read", "Home"))
+                .Update(update => update.Action("EditingPopup_Update", "Home"))
+                .Destroy(update => update.Action("EditingPopup_Destroy", "Home"))
+
+            ).ToHtmlString()
+            )
+
+
+            ;
+            items.Add().Text("Menu")
+            .Content(Html.Kendo().Menu().Name("menu").HtmlAttributes(new { style = "width:150px; height:500px;" })
+            .Orientation(MenuOrientation.Vertical)
+            .Scrollable(true)
+
+            @*.BindTo(Model, (item, category) =>
+            {
+                item.Text = category.CName;
+            })*@
+
+
+
+
+            .ToHtmlString()
+            );
+            items.Add().Text("MyCart");
+            items.Add().Text("MyAccount");
+            items.Add().Text("About us");
+            items.Add().Text("Contact us");
+        })
+    )
+@*@(Html.Kendo().Grid<Testkendo.Models.spGetItems_Result>()
+        .Name("grid")
+              .DataSource(dataSource => dataSource //Configure the Grid data source.
+                  .Ajax() //Specify that Ajax binding is used.
+                  .Read(read => read.Action("EditingPopup_Read", "Home")) // Set the action method which will return the data in JSON format.
+                  .Events(ev => ev.Error("onError"))
+               )
+              .Columns(columns =>
+              {
+                  //Create a column bound to the ProductID property.
+                  columns.Bound(product => product.PId);
+                  //Create a column bound to the ProductName property.
+                  columns.Bound(product => product.PName);
+                  columns.Bound(product => product.CName).Title("Category").Width(130);
+                  //Create a column bound to the UnitsInStock property.
+                  columns.Bound(product => product.PDesc);
+              })
+              .Pageable() // Enable paging
+                 .Sortable() // Enable sorting
+    )*@
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+</script>
+
